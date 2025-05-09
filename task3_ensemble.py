@@ -11,13 +11,14 @@ import pandas as pd
 
 
 #input_var_ids = sys.argv[1]
-#list_input = str(input_var_ids.split().replace(',', ''))
-list_input = str(["rs56116432", "COSM476", "__VAR(sv_id)__" ])
+input_var_ids = "rs56116432, COSM476"
+format_input = '","'.join(input_var_ids.replace(' ', '').split(','))
+
  
 server = "https://rest.ensembl.org"
 ext = "/vep/human/id"
 headers={ "Content-Type" : "application/json", "Accept" : "application/json"}
-r = requests.post(server+ext, headers=headers, data=str('{ "ids" : ' + list_input + ' }'))
+r = requests.post(server+ext, headers=headers, data=str('{ "ids" : ["' + format_input + '"] }'))
  
 if not r.ok:
   r.raise_for_status()
@@ -28,4 +29,3 @@ test= repr(decoded)
 df = pd.DataFrame(decoded)
 
 print(test)
- 
