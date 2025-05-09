@@ -9,6 +9,7 @@ usage: task1_fasta.py [path/file.fasta]
 """
 
 import argparse
+from collections import defaultdict
 
 
 def get_cli_args():
@@ -29,7 +30,7 @@ def get_most_freq_seq(filepath):
     @return: most common sequence and its count
     """
     
-    seq_counts = {} #initialize dictionary
+    seq_counts = defaultdict(int) #initialize dictionary to count from 0
     
     for line in open(filepath, 'r').readlines():
         
@@ -38,7 +39,7 @@ def get_most_freq_seq(filepath):
         if not line.startswith(">"):
             #skip header lines, increment count at dict seq key
             
-            seq_counts[line] = seq_counts.get(line, 0) + 1
+            seq_counts[line] += 1
 
     
     #return maximum dictionary count entry (seq, count)
