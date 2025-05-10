@@ -3,7 +3,9 @@
 """
 Created on Wed May  7 11:01:08 2025
 
-@author: kellyjes
+@author: Jessica Kelly
+
+usage: python task3_ensemble.py rsID_1, rsID2
 """
 
 import requests, sys
@@ -57,7 +59,6 @@ def main():
     
     print(json.dumps(info, indent=2))
     
-
 
 if __name__ == '__main__':
     main()

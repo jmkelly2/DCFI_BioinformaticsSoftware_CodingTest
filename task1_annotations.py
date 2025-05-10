@@ -6,9 +6,11 @@ Created on Thu May  8 19:59:59 2025
 @author: Jessica Kelly
 
 usage: python task1_annotations.py --gtf [path/file.gtf] -i [path/file_to_annoate.txt]
+
+Note: I chose to parse the gtf and store only the start and end positions of each gene instead of full annotations,
+since it seems that is the information we are looking for here and it imporves teh efficiency of querying.
 """
 
-import sys
 import argparse
 from collections import defaultdict
 
