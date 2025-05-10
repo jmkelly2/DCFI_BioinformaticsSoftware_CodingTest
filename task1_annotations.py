@@ -6,9 +6,10 @@ Created on Thu May  8 19:59:59 2025
 @author: Jessica Kelly
 
 usage: python task1_annotations.py --gtf [path/file.gtf] -i [path/file_to_annoate.txt]
+purpose: add gene annotations to a file of chr{i} {pos}
 
 Note: I chose to parse the gtf and store only the start and end positions of each gene instead of full annotations,
-since it seems that is the information we are looking for here and it imporves teh efficiency of querying.
+since it seems that is the information we are looking for here and it imporves the efficiency of querying.
 """
 
 import argparse
@@ -21,13 +22,13 @@ def get_cli_args():
     @return: Instance of argparse arguments
     """
 
-    parser = argparse.ArgumentParser(description='Give the filepath to gtf and file with chr pos to annotate per line')
+    parser = argparse.ArgumentParser(description="Give the filepath to gtf and file with chr pos to annotate per line")
 
-    parser.add_argument('--gtf', dest='gtf', type=str,
-                        help='gtf annotation file')
+    parser.add_argument('--gtf', '-g', dest='gtf', type=str,
+                        help="gtf annotation file", required=True)
 
     parser.add_argument('--input', '-i', dest='infile', type=str,
-                        help='file with chr pos to annotate per line')
+                        help="file with chr pos to annotate per line", required=True)
 
     return parser.parse_args()
 
@@ -94,31 +95,31 @@ def find_overlap(genes, pos):
     pos is the position
     @return: all genes that overlap the position
     """
-    
+
     #keep track of points of left and right genes to search between
     left = 0
     right = len(genes) - 1
-    
+
     results = []
-    
+
     #loop until searched whole list (left and right points have crossed)
     while left <= right:
-        
+
         mid = (left + right) // 2 #midpoint
         start, end, name = genes[mid]
-        
+
         if start <= pos <= end:
             #if position is within first and last coord of midpoint gene 
-            
+
             results.append(name)
-            
+
             # Scan adjacent genes to catch overlapping with input position
             i = mid - 1
             while i >= 0 and genes[i][0] <= pos:
                 if genes[i][1] >= pos:
                     results.append(genes[i][2])
                 i -= 1
-                
+
             i = mid + 1
             while i < len(genes) and genes[i][0] <= pos:
                 if genes[i][1] >= pos:
@@ -129,11 +130,11 @@ def find_overlap(genes, pos):
         elif pos < start:
             #if position is less than midpoint coord, search left half list
             right = mid - 1
-            
+
         else:
             #if position is greater than midpoint coord, search right half list
             left = mid + 1
-            
+
     return results
 
 
@@ -142,7 +143,7 @@ def annotate_positions(input_file, parsed_gtf, output_file):
     Parse input file of chr pos to annotate
     Get genes overlapping input postion and write output file with annotation
     """
-    
+
     missing_chr = [] #keep track of missing annotations
 
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
@@ -160,6 +161,7 @@ def annotate_positions(input_file, parsed_gtf, output_file):
                 else:
                     #write . if no genes overlapping position
                     outfile.write(f"{chrom}\t{pos}\t.\n")
+
             else:
                 if chrom not in missing_chr:
                     missing_chr.append(chrom)
@@ -168,16 +170,18 @@ def annotate_positions(input_file, parsed_gtf, output_file):
 
 
 def main():
-    print("Important Note: Make sure input coordinates and gtf are in the same genome build.")
-    
+    """ main method to get ensembl annotations"""
+
     input_to_annotate  = get_cli_args().infile
     input_gtf = get_cli_args().gtf
     
+    print("Important Note: Make sure input coordinates and gtf are in the same genome build.")
+
     output_annotated = f"{'/'.join(input_to_annotate.split('/')[:-1])}/ANNOTATED_{input_to_annotate.split('/')[-1]}"
 
     parsed_gtf = parse_gtf(input_gtf)
     annotate_positions(input_to_annotate, parsed_gtf, output_annotated)
-    
+
     print(f"Output annotated file was written to {output_annotated}\n")
 
 

@@ -3,7 +3,10 @@
 """
 Created on Wed May  7 18:27:13 2025
 
-@author: jessicakelly
+@author: Jessica Kelly
+
+usage: python task2_coverage.py (optional -i [interval_filepath])
+purpose: report average coverage of intervals by 10% GC bin
 """
 
 """ Pandas Solution. This solution is simple, but doesn't show off too many skills
@@ -29,11 +32,12 @@ def get_cli_args():
     @return: Instance of argparse arguments
     """
 
-    parser = argparse.ArgumentParser(description="Give fasta file path")
+    parser = argparse.ArgumentParser(description="Give interval filepath")
     parser.add_argument('-i',
                         dest='interval_file',
                         type=str,
-                        default="./Example.hs_intervals.txt")
+                        default="./Example.hs_intervals.txt",
+                        help="file with exon level hybrid catpure panel interval information")
 
     return parser.parse_args()
 
@@ -45,40 +49,40 @@ def make_binned_coverage(interval_file):
     @return: list of summed mean coverage per bin
     @return: list of total number of intervals per bin
     """
-    
+
     #initialize bins to keep track of bin interval count and total mean coverage
     #bin index represent 10's place of GC% (ex: bin[0] is intervals with 0-10%GC, bin[9] is 90-100%GC)
     binned_coverage = [-1] * 10
     binned_counts = [0] * 10
-    
+
     for line in open(interval_file, "r").readlines()[1:]:
         #skip first line - header
-        
+
         #parse line to get percent gc and mean coverage columns
         line = line.strip().split()
         perc_gc = float(line[5])*100 #make out of 100% instead decimal
         mean_cov = float(line[6])
-        
+
         #get 10s place of percent GC to define bin index
         bin_index = math.floor(perc_gc / 10)
-        
+
         #add mean coverage to coverage sum of bin
         if binned_coverage[bin_index] > -1:
             binned_coverage[bin_index] += mean_cov
         else:
             #initialize bin coverage
             binned_coverage[bin_index] = mean_cov
-    
+
         binned_counts[bin_index] += 1 #increment count of intervals in bin
-        
+
     return binned_coverage, binned_counts
 
 
 def report_binned_mean_coverage(binned_coverage, binned_counts):
     """ Calculate average per bin and report output """
-    
+
     print("\nMean coverage per GC content bin:\n")
-    
+
     for i in range(0, 10):
         bin_total = binned_coverage[i]
 
@@ -90,19 +94,19 @@ def report_binned_mean_coverage(binned_coverage, binned_counts):
             #sum bin coverage / count intervals in bin = mean bin coverage
             mean_bin_cov = bin_total/binned_counts[i]
 
-            print(f'[{j}-{j+10})% GC: {round(mean_bin_cov, 3)}')
-            
+            print(f"[{j}-{j+10})% GC: {round(mean_bin_cov, 3)}")
+
     print("\n")
 
 
 def main():
     """ main method to assess mean coverage across gc binned_coverage"""
-    
+
     interval_file = get_cli_args().interval_file
-    
+
     total_coverage, count_intervals = make_binned_coverage(interval_file)
     report_binned_mean_coverage(total_coverage, count_intervals)
-    
+
 
 if __name__ == '__main__':
     main()
