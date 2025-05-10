@@ -4,10 +4,10 @@ Usage: ```python task1_fastq.py [path/file.fastq]```
 
 I first used os.walk to recursively find files with the fastq extension. For each file, I parsed the second line and every fourth line, which represent the sequence, and counted how many were > 30 in length. I then reported % of total that were counted for the condition as a string added to a list. I printed all report strings in the result list.
 
-Result of the example files:
-Reporting % sequences with > 30 nt per fastq file found:
-./sample_files/fastq/read2/Sample_R2.fastq: 83.601%
-./sample_files/fastq/read1/Sample_R1.fastq: 80.642%
+Result of the example files: <br />
+Reporting % sequences with > 30 nt per fastq file found: <br />
+./sample_files/fastq/read2/Sample_R2.fastq: 83.601% <br />
+./sample_files/fastq/read1/Sample_R1.fastq: 80.642% <br />
 
 ## 2. Given a FASTA file with DNA sequences, find 10 most frequent sequences and return the sequence and their counts in the file.
 
@@ -15,6 +15,7 @@ Usage: ```python task1_fasta.py [path/file.fasta]```
 
 In the spirit of demonstrating use of data structures, I built a dictionary with sequences as keys and counts as items. I then sorted the list by count and took the top10, reporting the count and sequence.  Alternatively, the Counter class from the built-in collections could be used to clean up the code, as it makes a similar data structure to what I’ve implemented with cleaner code - but wouldn’t show off as much of my coding.
 Result of example file:
+<img width="699" alt="Screen Shot 2025-05-10 at 12 03 39 PM" src="https://github.com/user-attachments/assets/a4490023-15fc-4140-965e-d6615409a33a" />
 
 
 ## 3. Given a chromosome and coordinates, write a program for looking up its annotation. Keep in mind you'll be doing this annotation millions of times. Output Annotated file of gene name that input position overlaps.
@@ -58,17 +59,21 @@ Benefits:
 - Easily integrates with cloud platforms like Terra, DNAnexus, or custom pipelines on GCP, AWS, or Azure, facilitating scalable, reproducible analyses.
 
 Limitations:
-I/O-bound tasks - common in bioinformatics when working with very large files - are slowed down due to performance limitations of cloud storage.
-High network latency and the lack of low-latency interconnects in cloud environments can hinder the performance of parallel computing tasks that require tight node coordination.
-Overhead of setting up Docker and Kubernetes can be inefficient for small, quick jobs that don’t require containerization or orchestration benefits like scalability.
+- I/O-bound tasks - common in bioinformatics when working with very large files - are slowed down due to performance limitations of cloud storage.
+- High network latency and the lack of low-latency interconnects in cloud environments can hinder the performance of parallel computing tasks that require tight node coordination.
+- Overhead of setting up Docker and Kubernetes can be inefficient for small, quick jobs that don’t require containerization or orchestration benefits like scalability.
 
 # SQL
 ## Incorrect:				
+```
 SELECT UserId, AVG(Total) AS AvgOrderTotal FROM Invoices
-HAVING COUNT(OrderId) >= 1 
+HAVING COUNT(OrderId) >= 1
+```
 Problem: This statement is trying to select the user IDs and average totals of orders for users with more than one order. In order to count the orders per user and filter for >= 1, “HAVING” and “COUNT” need to be used with invoices (rows) that have first been grouped by user ID using “GROUP BY”. This also allows the average total to be calculated per user.
 
 ## The correct statement should be:
+```
 SELECT UserId, AVG(Total) AS AvgOrderTotal FROM Invoices
 GROUP BY UserId
-HAVING COUNT(OrderId) >= 1 		
+HAVING COUNT(OrderId) >= 1
+```
