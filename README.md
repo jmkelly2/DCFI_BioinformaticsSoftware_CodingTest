@@ -14,7 +14,8 @@ Reporting % sequences with > 30 nt per fastq file found: <br />
 Usage: ```python task1_fasta.py [path/file.fasta]```
 
 In the spirit of demonstrating use of data structures, I built a dictionary with sequences as keys and counts as items. I then sorted the list by count and took the top10, reporting the count and sequence.  Alternatively, the Counter class from the built-in collections could be used to clean up the code, as it makes a similar data structure to what I’ve implemented with cleaner code - but wouldn’t show off as much of my coding.
-Result of example file:
+
+Result of example file:  <br />
 <img width="699" alt="Screen Shot 2025-05-10 at 12 03 39 PM" src="https://github.com/user-attachments/assets/a4490023-15fc-4140-965e-d6615409a33a" />
 
 
@@ -22,6 +23,7 @@ Result of example file:
 I parsed the gtf myself by creating a dictionary indexed by chromosome. Each entry started as a dictionary indexed by gene name, with entries of (start_coordinate, end_coordinate) - the start and end coordinates were the min and max coordinate found in an annotation for each gene and were updated as the file was parsed. After the full gtf was parsed, the structure was collapsed into a dictionary indexed by (start, end, gene_name) and each index was sorted by start position. I chose to just store the gene and its start and stop positions since we were just interested in annotating coordinates with their overlapping genes.
 
 I then parsed the input coordinates by looking up the chromosome index in my gtf dictionary, and performing a binary search to efficiently find genes with which the variant overlaps. If the input chromosome is not in the annotation, a warning is printed. I added the list of overlapping genes identified in the search as a column to the input tsv - with the final output as ANNOTATED_[input_file].
+
 Output from the sample file is at sample_files/annotate/ANNOTATED_coordinates_to_annotate.txt
 
 # Task 2
@@ -31,16 +33,16 @@ My instinct was to use pandas to solve this problem efficiently, but my solution
 
 Once the file was parsed, I looped through my bin lists and reported the sum(coverage)/count(intervals) per GC content bin. Below is my output for the sample file.
 
-Mean coverage per GC content bin:
-[0-10)% GC: 0.0
-[10-20)% GC: 69.291
-[20-30)% GC: 77.934
-[30-40)% GC: 99.006
-[40-50)% GC: 101.283
-[50-60)% GC: 92.124
-[60-70)% GC: 78.925
-[70-80)% GC: 37.833
-[80-90)% GC: 10.283
+Mean coverage per GC content bin:  <br />
+[0-10)% GC: 0.0  <br />
+[10-20)% GC: 69.291  <br />
+[20-30)% GC: 77.934  <br />
+[30-40)% GC: 99.006  <br />
+[40-50)% GC: 101.283  <br />
+[50-60)% GC: 92.124  <br />
+[60-70)% GC: 78.925  <br />
+[70-80)% GC: 37.833  <br />
+[80-90)% GC: 10.283  <br />
 
 # Task 3
 Usage: ```python task3_ensemble.py [rsID_1],[rsID_2] (optional -o [filepath to output excel])```
